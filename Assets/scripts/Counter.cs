@@ -6,30 +6,25 @@ using System;
 public class Counter : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _text;
+
     private int _value = 0;
     private Coroutine _coroutine;
-    private Boolean _isWorking = false;
+    private bool _isWorking = false;
 
-    public void Restart()
+    public void ActivateCoroutine()
     {
         if (_isWorking == true)
         {
-            Stop();
+            StopCoroutine();
         }
         else
         {
             _isWorking = true;
-            _coroutine = StartCoroutine(NumberIncreaser(_value));
+            _coroutine = StartCoroutine(IncreaseOfNumber());
         }
     }
 
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-            Restart();
-    }
-
-    private void Stop()
+    private void StopCoroutine()
     {
         if (_coroutine != null)
         {
@@ -39,23 +34,27 @@ public class Counter : MonoBehaviour
         _isWorking = false;
     }
 
-    private IEnumerator NumberIncreaser(int startValue)
+    private IEnumerator IncreaseOfNumber()
     {
         float delay = 0.5f;
         var wait = new WaitForSeconds(delay);
 
         while (_isWorking)
         {
-            startValue = _value;
-            DisplayCount(startValue);
-            _value++;
+            DisplayCount(++_value);
 
             yield return wait;
         }
     }
 
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+            ActivateCoroutine();
+    }
+
     private void DisplayCount(int count)
     {
-        _text.text = count.ToString("");
+        _text.text = count.ToString();
     }
 }
